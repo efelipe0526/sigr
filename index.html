@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIGR - Restaurante</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <h1>SIGR - Restaurante</h1>
+    <p>Sistema Integral de Gestión de Restaurante</p>
+  </header>
+
+  <nav>
+    <a href="#inicio">Inicio</a>
+    <a href="#menu">Menú</a>
+    <a href="#reservas">Reservas</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
+
+  <section class="inicio" id="inicio">
+    <h2>¡Bienvenidos!</h2>
+    <p>Disfruta nuestro menú digital, haz tu pedido en línea y reserva tu mesa.</p>
+    <button onclick="irMenu()">Ver menú</button>
+  </section>
+
+  <section class="menu" id="menu">
+    <h2>Nuestro Menú</h2>
+    <div class="productos">
+      <div class="producto">
+        <h3>Hamburguesa de la casa</h3>
+        <p>$18.000</p>
+        <button onclick="agregar('Hamburguesa de la casa', 18000)">Agregar</button>
+      </div>
+      <div class="producto">
+        <h3>Perro caliente</h3>
+        <p>$12.000</p>
+        <button onclick="agregar('Perro caliente', 12000)">Agregar</button>
+      </div>
+      <div class="producto">
+        <h3>Papas fritas</h3>
+        <p>$8.000</p>
+        <button onclick="agregar('Papas fritas', 8000)">Agregar</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="carrito">
+    <h2>Mi pedido</h2>
+    <ul id="lista"></ul>
+    <h3 id="total">Total: $0</h3>
+    <button onclick="vaciar()">Vaciar carrito</button>
+  </section>
+
+  <section id="reservas">
+    <h2>Reserva tu mesa</h2>
+    <form onsubmit="return reservar(event)">
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" required>
+      <label for="fecha">Fecha:</label>
+      <input type="date" id="fecha" required>
+      <label for="hora">Hora:</label>
+      <input type="time" id="hora" required>
+      <button type="submit">Reservar</button>
+    </form>
+    <p id="confirmacion"></p>
+  </section>
+
+  <footer>
+    <p>Dirección: Tu ciudad &nbsp;|&nbsp; Teléfono: 300 000 0000</p>
+    <p>&copy; 2026 SIGR - Todos los derechos reservados</p>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
