@@ -24,6 +24,22 @@ function vaciar() {
   document.getElementById("lista").innerHTML = "";
   total = 0;
   document.getElementById("total").textContent = "Total: $0";
+  document.getElementById("confirmacionPedido").textContent = "";
+}
+
+// Confirma el pedido en línea y genera la confirmación automática
+function confirmarPedido() {
+  let mensaje = document.getElementById("confirmacionPedido");
+  if (total === 0) {
+    mensaje.textContent = "Agrega productos del menú antes de finalizar el pedido.";
+    return;
+  }
+  mensaje.textContent =
+    "Pedido confirmado por $" + total.toLocaleString("es-CO") +
+    ". Tu orden está en preparación.";
+  document.getElementById("lista").innerHTML = "";
+  total = 0;
+  document.getElementById("total").textContent = "Total: $0";
 }
 
 // Registra una reserva por fecha y hora y muestra la confirmación automática
