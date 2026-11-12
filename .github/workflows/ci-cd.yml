@@ -1,0 +1,70 @@
+name: Pipeline CI/CD - SIGR
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sigr-ci-cd-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Instalar dependencias de forma reproducible
+        run: npm ci
+
+      - name: Compilar TypeScript y Vite
+        run: npm run build
+
+      - name: Ejecutar pruebas unitarias y de integración
+        run: npm test
+
+      - name: Analizar calidad estática
+        run: npm run lint
+
+      - name: Auditar vulnerabilidades altas y críticas
+        run: npm audit --audit-level=high
+
+      - name: Publicar artefacto dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: sigr-dist
+          path: dist/
+          retention-days: 7
+
+      - name: Desplegar a staging en Vercel
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && env.VERCEL_TOKEN != '' && env.VERCEL_ORG_ID != '' && env.VERCEL_PROJECT_ID != ''
+        run: npx --yes vercel --yes --token "$VERCEL_TOKEN"
+
+      - name: Informar despliegue no configurado
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && (env.VERCEL_TOKEN == '' || env.VERCEL_ORG_ID == '' || env.VERCEL_PROJECT_ID == '')
+        run: >-
+          echo "Despliegue omitido: configure VERCEL_TOKEN, VERCEL_ORG_ID
+          y VERCEL_PROJECT_ID en GitHub Secrets."
+
+      - name: Registrar resultado
+        if: always()
+        run: echo "Pipeline SIGR finalizado ${{ job.status }}"
